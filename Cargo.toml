@@ -1,0 +1,36 @@
+[package]
+name = "primecrime-api"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cosmos-utils = { version = "0.3.3" }
+tokio = { version = "1.1.0", features = ["rt-multi-thread", "macros", "time"] }
+warp = "0.3.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0.72"
+serde_repr = "0.1"
+chrono = { version = "0.4.19", features = ["serde"] }
+chrono-tz = "0.5"
+uuid = { version = "0.8", features = ["v4"] }
+rand = "0.7.3"
+rust-argon2 = "0.8"
+jsonwebtoken = "^7"
+futures = "0.3"
+bitflags = "1.2.1"
+rust_decimal = {version = "1.8.1", features = ["serde-float"]}
+base64 = "0.12.3"
+sendgrid = { version = "0.16.0", features = ["async"] }
+sha2 = "0.9.2"
+hmac = "0.10.1"
+orion = "0.15.5"
+lazy_static = "1.4.0"
+md5 = "0.7.0"
+appinsights = "0.1.5"
+reqwest = { version = "0.11", features = ["json", "native-tls"] }
+url = "2.2.0"
+in_app_purchases = {path = "src/in_app_purchases"}
+#platform_signin = {path = "src/platform_signin"}
+third-pact = "0.1.2"

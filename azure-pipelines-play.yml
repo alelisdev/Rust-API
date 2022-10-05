@@ -1,0 +1,59 @@
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- dev
+
+resources:
+- repo: self
+
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: 'bffbb502-81f3-4714-8bb2-7e0c18f207b6'
+  imageRepository: 'primecrime-api'
+  containerRegistry: 'primecrimeplay.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  tag: '$(Build.BuildId)'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    timeoutInMinutes: 360 # How long to run the job before automatically cancelling.
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+- stage: Deploy
+  displayName: Deploy stage
+  jobs:
+  - job: Deploy
+    timeoutInMinutes: 360 # How long to run the job before automatically cancelling.
+    displayName: Deploy
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: AzureRmWebAppDeployment@4
+      inputs:
+        ConnectedServiceName: 'primecrime-play'
+        subscriptionName: '46338ed5-f5fb-451c-83cb-a8b1893360e8'
+        ConnectionType: 'AzureRM'
+        appType: 'webAppContainer'
+        WebAppName: 'primecrime-api-play'
+        DockerNamespace: 'primecrimeplay.azurecr.io'
+        DockerRepository: $(imageRepository)
+        DockerImageTag: $(tag)
